@@ -1,6 +1,8 @@
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import java.security.MessageDigest;
@@ -16,8 +18,8 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("---------- Ligma Inc. ----------");
-        System.out.println(f(BigInteger.TEN, BigInteger.TWO));
-
+        System.out.println(convertStringToArray("[[22,33,12],[214,52,12]]"));
+        System.out.println(g(BigInteger.valueOf(310830192), BigInteger.valueOf(48927492)));
         prompt();
     }
 
@@ -61,26 +63,51 @@ public class Main {
     /*
     Customers send merchants (x, f(x)^d).  We verify by calculating f(x) = f(x)^d^e using the bank's public exponent e.
      */
-    public static boolean verifyBill(BigInteger fx){
+    public static boolean verifyBill(BigInteger fx) {
         boolean equals = fx.equals(fx.modPow(e, n));
         return equals; // check that integer is not cut off
     }
 
-    public static void verifyBillPrompt(){
-        System.out.println("Enter bill number:");
-        BigInteger x = scanner.nextBigInteger();
-        System.out.println("Enter f(x)^d:");
-        BigInteger fxd = scanner.nextBigInteger();
-        boolean valid = verifyBill(fxd);
-        System.out.println("Bill #: " + x + " has been received and " + (valid ? "is VALID": "is INVALID"));
+    /*
+    We verify by calculating f(xi, yi), because we get ample information from either choice
+    We feel like we're missing one important piece of information that we need to verify.
+     */
+    public static void verifyBillPrompt() {
+        System.out.println("Enter choice string:");
+        String choices = scanner.nextLine();
+        System.out.println("Enter inputs:");
+        String inputs = scanner.nextLine();
+        List<List<BigInteger>> converted = convertStringToArray(inputs);
+
+        for (char choice : choices.toCharArray()) {
+
+        }
     }
 
-    public static void generateChunkChoicesPrompt(){
+    public static List<List<BigInteger>> convertStringToArray(String inputs){
+        inputs = inputs.replace("[", "");
+        inputs = inputs.replace("]", "");
+
+        String[] vals = inputs.split(",");
+
+        List<List<BigInteger>> result = new ArrayList<>();
+        List<BigInteger> temp = new ArrayList<>();
+        for (int i = 0; i < vals.length; i++) {
+            temp.add(new BigInteger(vals[i]));
+            if (i % 3 == 2) {
+                result.add(temp);
+                temp = new ArrayList<>();
+            }
+        }
+        return result;
+    }
+
+    public static void generateChunkChoicesPrompt() {
         System.out.println("The randomly generated chunk choices are: " + calculateOptionString());
         prompt();
     }
 
-    public static String calculateOptionString(){
+    public static String calculateOptionString() {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < 10; i++) {
             result.append(new Random().nextInt(2));
@@ -91,7 +118,7 @@ public class Main {
 
     public static void prompt() {
         System.out.println("Enter an option: \n1. Verify bill\n2. Generate chunk choices");
-        switch (new Scanner(System.in).nextInt()){
+        switch (new Scanner(System.in).nextInt()) {
             case 1:
                 verifyBillPrompt();
                 break;
@@ -104,31 +131,32 @@ public class Main {
         prompt();
     }
 
-    public static String f(BigInteger x, BigInteger y){
+    // todo: convert BigIntegers into binary representation so SHA can hash.  Padding needs to be done for the XOR with ai.
+    public static String f(BigInteger x, BigInteger y) {
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException ex) {
             throw new RuntimeException(ex);
         }
-        String originalString = x.toString() + y.toString();
+        String originalString = x.toString(2) + y.toString(2);
         return byteArrayToBinary(digest.digest(
                 originalString.getBytes(StandardCharsets.UTF_8)));
     }
 
-    public static String g(BigInteger x, BigInteger y){
+    public static String g(BigInteger x, BigInteger y) {
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException ex) {
             throw new RuntimeException(ex);
         }
-        String originalString = x.toString() + y.toString();
+        String originalString = x.toString(2) + y.toString(2);
         return byteArrayToBinary(digest.digest(
                 originalString.getBytes(StandardCharsets.UTF_8)));
     }
 
-    public static String byteArrayToBinary(byte[] input){
+    public static String byteArrayToBinary(byte[] input) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < input.length; i++) {
             result.append(Integer.toBinaryString(input[i]));
