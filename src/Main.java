@@ -1,7 +1,10 @@
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 import java.util.Scanner;
 import java.security.MessageDigest;
+
 
 public class Main {
 
@@ -9,14 +12,45 @@ public class Main {
 
     public static final Scanner scanner = new Scanner(System.in);
     public static final BigInteger e = BigInteger.ZERO;
+    public static final BigInteger n = BigInteger.ONE; // These two things are the Bank's public
 
     public static void main(String[] args) {
         System.out.println("---------- Ligma Inc. ----------");
+        System.out.println(f(BigInteger.TEN, BigInteger.TWO));
+
         prompt();
     }
 
     /*
     We 'bout to take Conner for all he's worth!
+     */
+
+    /*
+    1. Generate a string of zeros and ones, give it to the customer.
+    2. The customer either gives back I ⊕ ai, di, and xi for a 0 OR a
+    ai, ci, and yi for a 1.
+    3. Use those inputs to validate f(xi,yi) and make sure its not double spent.
+    4. If it is valid and has not been double spent, deposit in the merchant bank account.
+     */
+    /*
+    - ai is a binary number the same length as I, which is the customer account number concatenated with the bill number,
+     so 18 digits.
+
+    - ci and di are both random numbers for each chunk
+     */
+
+    /*  Tasks:
+    implement SHA
+    use BigInteger
+    method getBytes of string class for SHA
+
+        Details:
+    key ~ 1000 bit modulus, generate 500-bit or so primes
+    account number is 8 digits, bill number will be 10 digits
+    a,c,d are between 0 and 2^(128)-1
+    Use SHA-256 on concatenation of inputs for the XOR with a and padded with zeros on the left to 128 bits
+    Has functions f,g use result of SHA-256 on the concatenation of the two inputs in the order given in the description
+    k = k' = 10 for testing
      */
 
     /*
@@ -28,7 +62,7 @@ public class Main {
     Customers send merchants (x, f(x)^d).  We verify by calculating f(x) = f(x)^d^e using the bank's public exponent e.
      */
     public static boolean verifyBill(BigInteger fx){
-        boolean equals = fx.equals(fx.pow(e.intValue()));
+        boolean equals = fx.equals(fx.modPow(e, n));
         return equals; // check that integer is not cut off
     }
 
@@ -41,8 +75,9 @@ public class Main {
         System.out.println("Bill #: " + x + " has been received and " + (valid ? "is VALID": "is INVALID"));
     }
 
-    public static void depositCashPrompt(){
-
+    public static void generateChunkChoicesPrompt(){
+        System.out.println("The randomly generated chunk choices are: " + calculateOptionString());
+        prompt();
     }
 
     public static String calculateOptionString(){
@@ -55,17 +90,50 @@ public class Main {
 
 
     public static void prompt() {
-        System.out.println("Enter an option: \n1. Verify bill\n2. Deposit cash");
+        System.out.println("Enter an option: \n1. Verify bill\n2. Generate chunk choices");
         switch (new Scanner(System.in).nextInt()){
             case 1:
                 verifyBillPrompt();
                 break;
             case 2:
-                depositCashPrompt();
+                generateChunkChoicesPrompt();
                 break;
             default:
                 System.exit(0);
         }
         prompt();
     }
+
+    public static String f(BigInteger x, BigInteger y){
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException ex) {
+            throw new RuntimeException(ex);
+        }
+        String originalString = x.toString() + y.toString();
+        return byteArrayToBinary(digest.digest(
+                originalString.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    public static String g(BigInteger x, BigInteger y){
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException ex) {
+            throw new RuntimeException(ex);
+        }
+        String originalString = x.toString() + y.toString();
+        return byteArrayToBinary(digest.digest(
+                originalString.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    public static String byteArrayToBinary(byte[] input){
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < input.length; i++) {
+            result.append(Integer.toBinaryString(input[i]));
+        }
+        return result.toString();
+    }
+
 }
