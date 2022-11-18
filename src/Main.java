@@ -69,19 +69,60 @@ public class Main {
     }
 
     /*
-    We verify by calculating f(xi, yi), because we get ample information from either choice
-    We feel like we're missing one important piece of information that we need to verify.
+    We verify by calculating f(xi, yi) for each chunk, finding the product, and then checking if the
+    product is equal to f(xi, yi)^d^e, because we get ample information from either choice
      */
     public static void verifyBillPrompt() {
         System.out.println("Enter choice string:");
         String choices = scanner.nextLine();
         System.out.println("Enter inputs:");
         String inputs = scanner.nextLine();
+        // todo: double check with customer to see what format they will give us these numbers in
+        System.out.println("Enter the signed bill(?):");
+        BigInteger signed = new BigInteger(scanner.nextLine());
+
         List<List<BigInteger>> converted = convertStringToArray(inputs);
 
-        for (char choice : choices.toCharArray()) {
+        boolean billValid = billChunksAreValid(choices, converted, signed);
 
+        System.out.println(billValid ? "Bill is valid!": "Bill is invalid!");
+    }
+
+    private static boolean billChunksAreValid(String choices, List<List<BigInteger>> converted, BigInteger signed) {
+        List<BigInteger> result = new ArrayList<>();
+        for (int i = 0; i < choices.length(); i++)  {
+            List<BigInteger> cur = converted.get(i);
+
+            switch (choices.charAt(i)){
+                case '1' -> {
+                    BigInteger ai = cur.get(0);
+                    BigInteger ci = cur.get(1);
+                    BigInteger yi = cur.get(2);
+
+                    BigInteger resG = new BigInteger(g(ai,ci), 2);
+                    String fxiyi = f(resG, yi);
+
+                    result.add(new BigInteger(fxiyi, 2));
+                }
+                case '0' -> {
+                    BigInteger aiXORi = cur.get(0);
+                    BigInteger di = cur.get(1);
+                    BigInteger xi = cur.get(2);
+
+                    BigInteger resG = new BigInteger(g(aiXORi,di), 2);
+                    String fxiyi = f(xi, resG);
+
+                    result.add(new BigInteger(fxiyi, 2));
+                }
+            }
         }
+
+        // multiply all elements in the list together to get the product.
+        BigInteger product = result.stream().reduce(BigInteger.ONE, BigInteger::multiply);
+
+        BigInteger raised = signed.modPow(e, n);
+
+        return raised.equals(product);
     }
 
     public static List<List<BigInteger>> convertStringToArray(String inputs){
