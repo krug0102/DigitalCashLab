@@ -10,16 +10,26 @@ import java.security.MessageDigest;
 
 public class Main {
 
+    public enum Bank{
+        OLLIE, CONOR
+    }
+
+    static public Bank selected = Bank.CONOR;
+
     // todo: change this to the public key later
 
     public static final Scanner scanner = new Scanner(System.in);
-    public static final BigInteger e = BigInteger.ZERO;
-    public static final BigInteger n = BigInteger.ONE; // These two things are the Bank's public
+
+    // Bank 1's public key pair
+    public static final BigInteger CONOR_EXPONENT = BigInteger.ZERO;
+    public static final BigInteger CONOR_N = BigInteger.ONE; // These two things are the Bank's public
+
+    // Bank 2's public key pair
+    public static final BigInteger OLLIE_EXPONENT = BigInteger.ZERO;
+    public static final BigInteger OLLIE_N = BigInteger.ONE;
 
     public static void main(String[] args) {
         System.out.println("---------- Ligma Inc. ----------");
-        System.out.println(convertStringToArray("[[22,33,12],[214,52,12]]"));
-        System.out.println(g(BigInteger.valueOf(310830192), BigInteger.valueOf(48927492)));
         prompt();
     }
 
@@ -63,10 +73,6 @@ public class Main {
     /*
     Customers send merchants (x, f(x)^d).  We verify by calculating f(x) = f(x)^d^e using the bank's public exponent e.
      */
-    public static boolean verifyBill(BigInteger fx) {
-        boolean equals = fx.equals(fx.modPow(e, n));
-        return equals; // check that integer is not cut off
-    }
 
     /*
     We verify by calculating f(xi, yi) for each chunk, finding the product, and then checking if the
@@ -120,10 +126,12 @@ public class Main {
         // multiply all elements in the list together to get the product.
         BigInteger product = result.stream().reduce(BigInteger.ONE, BigInteger::multiply);
 
-        BigInteger raised = signed.modPow(e, n);
+        BigInteger raised = signed.modPow(getE(), getN());
 
         return raised.equals(product);
     }
+
+
 
     public static List<List<BigInteger>> convertStringToArray(String inputs){
         inputs = inputs.replace("[", "");
@@ -158,17 +166,29 @@ public class Main {
 
 
     public static void prompt() {
-        System.out.println("Enter an option: \n1. Verify bill\n2. Generate chunk choices");
+        System.out.println("Currently partnered with the bank of " + selected);
+        System.out.println("Enter an option: \n1. Verify bill\n2. Generate chunk choices\n3. Switch banks");
         switch (new Scanner(System.in).nextInt()) {
-            case 1:
+            case 1 ->
                 verifyBillPrompt();
-                break;
-            case 2:
+            case 2 ->
                 generateChunkChoicesPrompt();
-                break;
-            default:
+            case 3 ->
+                changeBanksPrompt();
+            default ->
                 System.exit(0);
         }
+        prompt();
+    }
+
+    private static void changeBanksPrompt() {
+        System.out.println("Select a bank:\n1. The Bank of Conor\n2. The Bank of Ollie");
+        selected = switch (new Scanner(System.in).nextInt()){
+            case 1 -> Bank.CONOR;
+            case 2 -> Bank.OLLIE;
+            default -> Bank.CONOR;
+        };
+        System.out.println("Selected " + selected + "!");
         prompt();
     }
 
@@ -203,6 +223,14 @@ public class Main {
             result.append(Integer.toBinaryString(input[i]));
         }
         return result.toString();
+    }
+
+    public static BigInteger getE(){
+        return selected == Bank.CONOR ? CONOR_EXPONENT: OLLIE_EXPONENT;
+    }
+
+    public static BigInteger getN(){
+        return selected == Bank.OLLIE ? OLLIE_N : CONOR_N;
     }
 
 }
