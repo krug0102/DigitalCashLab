@@ -14,10 +14,11 @@ public class Main {
         OLLIE, CONOR
     }
 
+    /**
+     * Our account number in Ollie's system is: 73448470
+     */
+
     static public Bank selected = Bank.CONOR;
-
-    // todo: change this to the public key later
-
     public static final Scanner scanner = new Scanner(System.in);
 
     // Bank 1's public key pair
@@ -25,8 +26,8 @@ public class Main {
     public static final BigInteger CONOR_N = BigInteger.ONE; // These two things are the Bank's public
 
     // Bank 2's public key pair
-    public static final BigInteger OLLIE_EXPONENT = BigInteger.ZERO;
-    public static final BigInteger OLLIE_N = BigInteger.ONE;
+    public static final BigInteger OLLIE_EXPONENT = new BigInteger("7");
+    public static final BigInteger OLLIE_N = new BigInteger("45102246070852877005834805071565697303530753565236670573550117115010865770545266090895421231898028549377566326963374616157756280120181748932018677751293313293523827859377666639166849915682609959979131340115018334098535898721356842525455183760413239157639236971732220612271453478131788159610221783610160493541");
 
     public static void main(String[] args) {
         System.out.println("---------- Ligma Inc. ----------");
@@ -137,7 +138,7 @@ public class Main {
         inputs = inputs.replace("[", "");
         inputs = inputs.replace("]", "");
 
-        String[] vals = inputs.split(",");
+        String[] vals = inputs.split(", ");
 
         List<List<BigInteger>> result = new ArrayList<>();
         List<BigInteger> temp = new ArrayList<>();
@@ -152,11 +153,11 @@ public class Main {
     }
 
     public static void generateChunkChoicesPrompt() {
-        System.out.println("The randomly generated chunk choices are: " + calculateOptionString());
+        System.out.println("The randomly generated chunk choices are: " + generateChunkChoices());
         prompt();
     }
 
-    public static String calculateOptionString() {
+    public static String generateChunkChoices() {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < 10; i++) {
             result.append(new Random().nextInt(2));
