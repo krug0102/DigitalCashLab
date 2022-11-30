@@ -23,7 +23,7 @@ public class Main {
 
     // Bank 1's public key pair
     public static final BigInteger CONOR_EXPONENT = BigInteger.ZERO;
-    public static final BigInteger CONOR_N = BigInteger.ONE; // These two things are the Bank's public
+    public static final BigInteger CONOR_N = BigInteger.ONE; // These two things are the Bank's public key
 
     // Bank 2's public key pair
     public static final BigInteger OLLIE_EXPONENT = new BigInteger("7");
@@ -187,13 +187,12 @@ public class Main {
         selected = switch (new Scanner(System.in).nextInt()){
             case 1 -> Bank.CONOR;
             case 2 -> Bank.OLLIE;
-            default -> Bank.CONOR;
+            default -> Bank.OLLIE;
         };
         System.out.println("Selected " + selected + "!");
         prompt();
     }
 
-    // todo: convert BigIntegers into binary representation so SHA can hash.  Padding needs to be done for the XOR with ai.
     public static String f(BigInteger x, BigInteger y) {
         MessageDigest digest = null;
         try {
