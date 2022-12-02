@@ -18,7 +18,7 @@ public class Main {
      * Our account number in Ollie's system is: 73448470
      */
 
-    static public Bank selected = Bank.CONOR;
+    static public Bank selected = Bank.OLLIE;
     public static final Scanner scanner = new Scanner(System.in);
 
     // Bank 1's public key pair
@@ -107,9 +107,9 @@ public class Main {
                     BigInteger yi = cur.get(2);
 
                     BigInteger resG = new BigInteger(g(ai,ci), 2);
-                    String fxiyi = f(resG, yi);
+                    BigInteger resF = new BigInteger(f(resG, yi), 2);
 
-                    result.add(new BigInteger(fxiyi, 2));
+                    result.add(resF);
                 }
                 case '0' -> {
                     BigInteger aiXORi = cur.get(0);
@@ -117,9 +117,9 @@ public class Main {
                     BigInteger xi = cur.get(2);
 
                     BigInteger resG = new BigInteger(g(aiXORi,di), 2);
-                    String fxiyi = f(xi, resG);
+                    BigInteger resF = new BigInteger(f(xi, resG), 2);
 
-                    result.add(new BigInteger(fxiyi, 2));
+                    result.add(resF);
                 }
             }
         }
