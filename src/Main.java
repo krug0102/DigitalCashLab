@@ -29,6 +29,10 @@ public class Main {
     public static final BigInteger OLLIE_EXPONENT = new BigInteger("7");
     public static final BigInteger OLLIE_N = new BigInteger("45102246070852877005834805071565697303530753565236670573550117115010865770545266090895421231898028549377566326963374616157756280120181748932018677751293313293523827859377666639166849915682609959979131340115018334098535898721356842525455183760413239157639236971732220612271453478131788159610221783610160493541");
 
+    // 4544651104410199, 819864850245673
+    public static final BigInteger LLOYD_E = new BigInteger("819864850245673");
+    public static final BigInteger LLOYD_N = new BigInteger("4544651104410199");
+
     public static void main(String[] args) {
         System.out.println("---------- Ligma Inc. ----------");
         prompt();
@@ -79,6 +83,9 @@ public class Main {
     We verify by calculating f(xi, yi) for each chunk, finding the product, and then checking if the
     product is equal to f(xi, yi)^d^e, because we get ample information from either choice
      */
+
+    // Lloyd's key pair: Public key (n,e): (91,29)
+    //                   Private key(p,q,d): (13,7,5)
     public static void verifyBillPrompt() {
         System.out.println("Enter choice string:");
         String choices = scanner.nextLine();
@@ -138,7 +145,7 @@ public class Main {
         inputs = inputs.replace("[", "");
         inputs = inputs.replace("]", "");
 
-        String[] vals = inputs.split(", ");
+        String[] vals = inputs.split(",");
 
         List<List<BigInteger>> result = new ArrayList<>();
         List<BigInteger> temp = new ArrayList<>();
@@ -226,11 +233,11 @@ public class Main {
     }
 
     public static BigInteger getE(){
-        return selected == Bank.CONOR ? CONOR_EXPONENT: OLLIE_EXPONENT;
+        return selected == Bank.CONOR ? LLOYD_E: OLLIE_EXPONENT;
     }
 
     public static BigInteger getN(){
-        return selected == Bank.OLLIE ? OLLIE_N : CONOR_N;
+        return selected == Bank.OLLIE ? OLLIE_N : LLOYD_N;
     }
 
 }
