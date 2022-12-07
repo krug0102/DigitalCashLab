@@ -11,7 +11,7 @@ import java.security.MessageDigest;
 public class Main {
 
     public enum Bank{
-        OLLIE, CONOR
+        OLLIE, LLOYD
     }
 
     /**
@@ -29,7 +29,7 @@ public class Main {
     public static final BigInteger OLLIE_EXPONENT = new BigInteger("7");
     public static final BigInteger OLLIE_N = new BigInteger("45102246070852877005834805071565697303530753565236670573550117115010865770545266090895421231898028549377566326963374616157756280120181748932018677751293313293523827859377666639166849915682609959979131340115018334098535898721356842525455183760413239157639236971732220612271453478131788159610221783610160493541");
 
-    // 4544651104410199, 819864850245673
+    // Lloyd's public key pair
     public static final BigInteger LLOYD_E = new BigInteger("819864850245673");
     public static final BigInteger LLOYD_N = new BigInteger("4544651104410199");
 
@@ -190,9 +190,9 @@ public class Main {
     }
 
     private static void changeBanksPrompt() {
-        System.out.println("Select a bank:\n1. The Bank of Conor\n2. The Bank of Ollie");
+        System.out.println("Select a bank:\n1. The Bank of LLOYD\n2. The Bank of Ollie");
         selected = switch (new Scanner(System.in).nextInt()){
-            case 1 -> Bank.CONOR;
+            case 1 -> Bank.LLOYD;
             case 2 -> Bank.OLLIE;
             default -> Bank.OLLIE;
         };
@@ -233,7 +233,7 @@ public class Main {
     }
 
     public static BigInteger getE(){
-        return selected == Bank.CONOR ? LLOYD_E: OLLIE_EXPONENT;
+        return selected == Bank.LLOYD ? LLOYD_E: OLLIE_EXPONENT;
     }
 
     public static BigInteger getN(){
