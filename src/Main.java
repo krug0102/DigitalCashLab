@@ -11,7 +11,7 @@ import java.security.MessageDigest;
 public class Main {
 
     public enum Bank{
-        OLLIE, LLOYD
+        OLLIE, CONOR, LLOYD
     }
 
     /**
@@ -142,6 +142,7 @@ public class Main {
 
 
     public static List<List<BigInteger>> convertStringToArray(String inputs){
+        inputs = inputs.replace(" ", "");
         inputs = inputs.replace("[", "");
         inputs = inputs.replace("]", "");
 
