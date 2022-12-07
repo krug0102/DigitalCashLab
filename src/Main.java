@@ -142,11 +142,10 @@ public class Main {
 
 
     public static List<List<BigInteger>> convertStringToArray(String inputs){
-        inputs = inputs.replace(" ", "");
         inputs = inputs.replace("[", "");
         inputs = inputs.replace("]", "");
 
-        String[] vals = inputs.split(",");
+        String[] vals = inputs.split("\s?,\s?");
 
         List<List<BigInteger>> result = new ArrayList<>();
         List<BigInteger> temp = new ArrayList<>();
